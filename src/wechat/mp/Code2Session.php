@@ -1,8 +1,8 @@
 <?php
 
-namespace Littlemo\Tool\wechat\mp;
+namespace littlemo\tool\wechat\mp;
 
-use Littlemo\Tool\wechat\mp\WXBizDataCrypt;
+use littlemo\tool\wechat\mp\WXBizDataCrypt;
 
 /**
  * TODO 小程序登录凭证校验。通过 wx.login 接口获得临时登录凭证 code 换取openid。

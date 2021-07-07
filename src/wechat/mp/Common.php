@@ -1,6 +1,6 @@
 <?php
 
-namespace Littlemo\Tool\wechat\mp;
+namespace littlemo\tool\wechat\mp;
 
 class Common
 {

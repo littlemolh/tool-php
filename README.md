@@ -31,7 +31,7 @@ php常用工具库
 
 
 ```php
-use Littlemo\Tool\RequestRate;
+use littlemo\tool\RequestRate;
 $config=[
     'prefix'=>'ip',//缓存前缀
     'time'=>'60',//单位时间（s）
@@ -71,7 +71,7 @@ if($result === true){
 
 
 ```php
-use Littlemo\Tool\Git;
+use littlemo\tool\Git;
 $token = 'XXXXXXX';
 
 //实例化对象

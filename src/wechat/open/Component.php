@@ -1,6 +1,6 @@
 <?php
 
-namespace Littlemo\Tool\open;
+namespace littlemo\tool\open;
 
 use think\Cache;
 

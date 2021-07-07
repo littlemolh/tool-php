@@ -1,6 +1,6 @@
 <?php
 
-namespace Littlemo\Tool;
+namespace littlemo\tool;
 
 use Redis;
 

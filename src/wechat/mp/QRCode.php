@@ -1,10 +1,10 @@
 <?php
 
-namespace Littlemo\Tool\wechat\mp;
+namespace littlemo\tool\wechat\mp;
 
-use Littlemo\Tool\wechat\mp\WXBizDataCrypt;
+use littlemo\tool\wechat\mp\WXBizDataCrypt;
 use think\Env;
-use Littlemo\Tool\wechat\mp\Auth;
+use littlemo\tool\wechat\mp\Auth;
 
 /**
  * TODO 小程序码
