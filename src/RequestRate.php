@@ -28,7 +28,12 @@ class RequestRate
     /**
      * 缓存配置
      */
-    static $cacheConfig = [];
+    static $cacheConfig = [
+        'type' => 'redis',
+        'host' => '127.0.0.1',
+        'port' => '6379',
+        'select' => 0,
+    ];
 
     /**
      * 统计时间周期(单位：s)
@@ -58,7 +63,9 @@ class RequestRate
 
         self::$maxCount = $config['maxCount'] ?? self::$maxCount;
 
-        $this->setCacheObj($config['cache'] ?? []);
+        self::$cacheConfig = array_merge(self::$cacheConfig, $config['cache']);
+
+        $this->setCacheObj();
 
         self::$key = self::$prefix . $this->getIp();
     }
@@ -104,19 +111,13 @@ class RequestRate
      * @param array $config
      * @return void
      */
-    public  function setCacheObj($config = [])
+    public  function setCacheObj()
     {
-        $config = self::$cacheConfig = array_merge([
-            'type' => 'redis',
-            'host' => '127.0.0.1',
-            'port' => '6379',
-            'select' => 0,
-        ], $config);
-        switch ($config['type']) {
+        switch (self::$cacheConfig['type']) {
             case 'redis':
                 self::$cacheObj = new Redis();
-                self::$cacheObj->connect($config['host'], $config['port']);
-                self::$cacheObj->select($config['select']);
+                self::$cacheObj->connect(self::$cacheConfig['host'], self::$cacheConfig['port']);
+                self::$cacheObj->select(self::$cacheConfig['select']);
                 break;
         }
     }
