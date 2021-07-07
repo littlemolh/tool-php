@@ -47,14 +47,13 @@ class QRCode extends Common
 
         //请求参数
         $params = [
-            'access_token' => (new Auth)->getAccessToken($this->appid, $this->secret,), //接口调用凭证
+            'access_token' => (new Auth)->getAccessToken($this->appid, $this->secret), //接口调用凭证
             'path' => $path, //扫码进入的小程序页面路径，最大长度 128 字节，不能为空；对于小游戏，可以只传入 query 部分，来实现传参效果，如：传入 "?foo=bar"，即可在 wx.getLaunchOptionsSync 接口中的 query 参数获取到 {foo:"bar"}。
             'width' => $width, //二维码的宽度，单位 px。最小 280px，最大 1280px
         ];
         $url = "https://api.weixin.qq.com/cgi-bin/wxaapp/createwxaqrcode";
         $result = $this->wxHttpsRequest($url, $params);
-        $jsoninfo = json_decode($result, true);
-        return $jsoninfo;
+        return self::returnData($result);
     }
 
     /**
@@ -77,14 +76,13 @@ class QRCode extends Common
             'access_token' => (new Auth)->getAccessToken($this->appid, $this->secret), //接口调用凭证
             'path' => $path, //扫码进入的小程序页面路径，最大长度 128 字节，不能为空；对于小游戏，可以只传入 query 部分，来实现传参效果，如：传入 "?foo=bar"，即可在 wx.getLaunchOptionsSync 接口中的 query 参数获取到 {foo:"bar"}。
             'width' => $width, //二维码的宽度，单位 px。最小 280px，最大 1280px
-            'auto_color' => $width, //自动配置线条颜色，如果颜色依然是黑色，则说明不建议配置主色调
-            'line_color' => $width, //auto_color 为 false 时生效，使用 rgb 设置颜色 例如 {"r":"xxx","g":"xxx","b":"xxx"} 十进制表示
-            'is_hyaline' => $width, //是否需要透明底色，为 true 时，生成透明底色的小程序码
+            'auto_color' => $auto_color, //自动配置线条颜色，如果颜色依然是黑色，则说明不建议配置主色调
+            'line_color' => $line_color, //auto_color 为 false 时生效，使用 rgb 设置颜色 例如 {"r":"xxx","g":"xxx","b":"xxx"} 十进制表示
+            'is_hyaline' => $is_hyaline, //是否需要透明底色，为 true 时，生成透明底色的小程序码
         ];
         $url = "https://api.weixin.qq.com/wxa/getwxacode";
         $result = $this->wxHttpsRequest($url, $params);
-        $jsoninfo = json_decode($result, true);
-        return $jsoninfo;
+        return self::returnData($result);
     }
     /**
      * 获取小程序码
@@ -119,6 +117,21 @@ class QRCode extends Common
         ];
         $url = "https://api.weixin.qq.com/wxa/getwxacodeunlimit?access_token=" . $access_token;
         $result = $this->wxHttpsRequest($url, json_encode($params));
+        return self::returnData($result);
+    }
+    /**
+     * 处理返回数据
+     *
+     * @description
+     * @example
+     * @author LittleMo 25362583@qq.com
+     * @since 2021-07-07
+     * @version 2021-07-07
+     * @param string $result
+     * @return array 
+     */
+    private static function returnData($result = '')
+    {
         $jsoninfo = json_decode($result, true);
         if (empty($jsoninfo) && !empty($result)) {
             if ($result == 'Errno6') {
