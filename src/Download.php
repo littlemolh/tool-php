@@ -26,7 +26,7 @@ class Download
      * @param string $filename  带后缀的文件名称
      * @return void
      */
-    public function file($file, $filename)
+    public static function file($file, $filename)
     {
         //检查文件是否存在    
         if (!file_exists($file)) {
