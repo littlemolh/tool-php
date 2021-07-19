@@ -52,10 +52,14 @@ class Git
     public function check($localToken = '')
     {
         $distalToken = $_GET['token'] ?? $_SERVER['HTTP_X_GITEE_TOKEN'] ?? 'k';
-        if (!empty($localToken) && $localToken != $distalToken) {
-            self::$errorMsg = '权限不足';
+        if (empty($localToken)) {
+            self::$errorMsg = '请先配置Token';
         } else {
-            self::$errorMsg = null;
+            if ($localToken != $distalToken) {
+                self::$errorMsg = '权限不足';
+            } else {
+                self::$errorMsg = null;
+            }
         }
     }
 
