@@ -35,7 +35,9 @@ class Git
      */
     public function __construct($token = '')
     {
-        $this->check($token);
+        if (!empty($token)) {
+            $this->check($token);
+        }
     }
 
     /**
