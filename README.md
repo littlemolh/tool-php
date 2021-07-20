@@ -55,8 +55,8 @@ $requestRate->setCacheObj();
 
 //验证器
 $result = $requestRate->check();
-if($result === true){
-    echo $error;
+if($result === false){
+    echo $requestRate->$getMessage();
 }else{
     echo '未达到请求次数上限';
 }
@@ -72,21 +72,42 @@ if($result === true){
 
 ```php
 use littlemo\tool\Git;
+
 $token = 'XXXXXXX';
 
 //实例化对象
-$git = new Git($token);
+$Git = new Git($token);
 
 //验证器
-$error = $git->check();
+$error = $Git->check($token);
 
-//拉取代码
-$path = '..';//执行脚本相对路径
-$exec = 'git pull origin master';//执行脚本
-$requestRate->pull($path, $exec);
+/**
+* 拉取代码
+* @param string $path   执行脚本相对路径；默认：'..'
+* @param string $exec   执行脚本；默认：'git pull origin master'
+*/
+$Git->pull($path, $exec);
 
 ```
 - 拉取代码的日志会直接在页面输出
+
+#### 下载文件
+
+##### 示例代码
+
+
+```php
+use littlemo\tool\Download;
+
+/**
+* 下载文件
+* @param string $file      文件路径（文件所在磁盘的绝对路径）
+* @param string $filename  带后缀的文件名称
+*/
+
+Download::file($file, $filename);
+
+```
 
 
 
@@ -97,4 +118,4 @@ $requestRate->pull($path, $exec);
 
 ### 特技
 
-- 统一和精简大量用法
+- 统一、精简
