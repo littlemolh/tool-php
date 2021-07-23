@@ -18,7 +18,7 @@ php常用工具库
 ### 安装教程
 
 1.  在项目根目录找到并打开 `composer.json` 
-2.  在 `composer.json` 中 `require` 节点添加 `"littlemo/tool": "1.0.0"`
+2.  在 `composer.json` 中 `require` 节点添加 `"littlemo/tool": "*"`
 3.  执行脚本 `composer update` 
 
 ### 使用说明
