@@ -3,7 +3,8 @@
     "description": "the littlemo common tools",
     "type": "project",
     "keywords": [
-        "thinkphp"
+        "thinkphp",
+        "tool"
     ],
     "license": "Apache-2.0",
     "authors": [
