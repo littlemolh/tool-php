@@ -1,15 +1,13 @@
 <?php
 
 // +----------------------------------------------------------------------
-// | ThinkPHP [ WE CAN DO IT JUST THINK IT ]
+// | Little Mo - Tool [ WE CAN DO IT JUST TIDY UP IT ]
 // +----------------------------------------------------------------------
-// | Copyright (c) 2011 http://thinkphp.cn All rights reserved.
+// | Copyright (c) 2011 http://ggui.cn All rights reserved.
 // +----------------------------------------------------------------------
 // | Licensed ( http://www.apache.org/licenses/LICENSE-2.0 )
 // +----------------------------------------------------------------------
-// | Author: luofei614 <weibo.com/luofei614>
-// +----------------------------------------------------------------------
-// | 修改者: anuo (本权限类在原3.2.3的基础上修改过来的)
+// | Author: littlemo <25362583@qq.com>
 // +----------------------------------------------------------------------
 
 namespace littlemo\tool;
