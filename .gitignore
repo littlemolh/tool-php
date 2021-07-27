@@ -2,4 +2,5 @@
 composer.lock
 /vendor
 /demo.php
+/demo/
 /thinkphp
