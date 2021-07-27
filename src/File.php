@@ -58,12 +58,6 @@ class File
         return $filename;
     }
 
-    /*
- * 递归获取文件夹和文件
- * @param   $path 获取的文件夹路径
- * @return  $list array
- * 使用scandir函数可以扫描文件夹下内容 代替while循环读取
- */
     /**
      * 递归获取文件夹和文件列表
      *
