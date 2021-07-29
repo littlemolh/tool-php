@@ -227,6 +227,7 @@ class BaseModel extends Model
             return Cache::get($name);
         }
         $data = self::get($id);
+        !empty($data) && $data = $data->toArray();
         Cache::set($name, $data, 3600);
         return $data;
     }
