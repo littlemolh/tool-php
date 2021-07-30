@@ -1,6 +1,6 @@
 <?php
 
-namespace littlemo\tool\wechat\mp;
+namespace littlemo\tool\wechat\mp\common;
 
 /**
  * error code 说明.

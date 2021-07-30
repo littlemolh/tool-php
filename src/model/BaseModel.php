@@ -44,7 +44,7 @@ class BaseModel extends Model
      * @since 2021-04-02
      * @version 2021-04-02
      * @param array $params 筛选条件
-     * @return void
+     * @return array
      */
     public function getListData($params = [], $_wsql = '')
     {
@@ -70,7 +70,7 @@ class BaseModel extends Model
      * @since 2021-04-02
      * @version 2021-04-02
      * @param array $params 筛选条件
-     * @return void
+     * @return array
      */
     public function totalCount($params = [])
     {
@@ -112,7 +112,7 @@ class BaseModel extends Model
      * @version 2021-04-02
      * @param array $params 筛选条件
      * @param string $field 字段名
-     * @return void
+     * @return array
      */
     public function totalSum($params = [], $field = '')
     {
@@ -161,7 +161,7 @@ class BaseModel extends Model
      * @param array $params 筛选条件
      * @param string $group 分组字段
      * @param array $field  查询字段
-     * @return void
+     * @return array
      */
     public function getGroupListData($params = [], $group = '', $field = [])
     {
@@ -217,8 +217,8 @@ class BaseModel extends Model
      * @author LittleMo 25362583@qq.com
      * @since 2021-07-03
      * @version 2021-07-03
-     * @param [type] $id
-     * @return void
+     * @param int $id 主键ID
+     * @return array
      */
     public function getRowDataCache($id)
     {
@@ -239,8 +239,8 @@ class BaseModel extends Model
      * @author LittleMo 25362583@qq.com
      * @since 2021-07-03
      * @version 2021-07-03
-     * @param [type] $id
-     * @return void
+     * @param int $id 主键ID
+     * @return boolean
      */
     public function rmRowDataCache($id)
     {
@@ -258,13 +258,14 @@ class BaseModel extends Model
      * @author LittleMo 25362583@qq.com
      * @since 2021-07-07
      * @version 2021-07-07
-     * @param [type] $id
-     * @return void
+     * @param int $id
+     * @return string
      */
     private function getRowDataCacheName($id)
     {
         return str_replace('_', '-', $this->table) . '-row-data-' . $id;
     }
+
     /**
      * 添加一条记录
      *
@@ -274,7 +275,7 @@ class BaseModel extends Model
      * @since 2021-07-01
      * @version 2021-07-01
      * @param array $params
-     * @return void
+     * @return boolean/int
      */
     public function add($params = [], $allowField = [])
     {
@@ -295,7 +296,7 @@ class BaseModel extends Model
      * @version 2021-07-01
      * @param int $id 主键ID
      * @param array $params 编辑内容
-     * @return void
+     * @return int
      */
     public function edit($id = 0, $params = [])
     {
@@ -315,7 +316,7 @@ class BaseModel extends Model
      * @since 2021-07-01
      * @version 2021-07-01
      * @param int $id 主键ID
-     * @return void
+     * @return int
      */
     public function del($id = 0)
     {

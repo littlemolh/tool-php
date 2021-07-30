@@ -41,10 +41,8 @@ class Component
 
     public function __construct($config = [])
     {
-        $this->appid = !empty($config['appid']) ? $config['appid'] : get_wx_component()['appid'];
-        // $this->appid = !empty($config['appid']) ? $config['appid'] : Env::get('weixin_component.appid');
-        $this->appsecret = !empty($config['appsecret']) ? $config['appsecret'] : get_wx_component()['appsecret'];
-        // $this->appsecret = !empty($config['appsecret']) ? $config['appsecret'] : Env::get('weixin_component.appsecret');
+        $this->appid = $config['appid'] ?? '';
+        $this->appsecret = $config['appsecret'] ?? '';
         $this->verifyTicket = $config['verify_ticket'] ?? '';
     }
     /**
