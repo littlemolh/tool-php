@@ -49,13 +49,19 @@ class BaseModel extends Model
     public function getListData($params = [], $_wsql = '')
     {
         $data = [];
+        $page =  $params['page'] ?? $this->page;
+        $pagesize = $params['pagesize'] ?? $this->pagesize;
+
         $wsql = $this->commonWsql($params);
+
         $data['data'] = $this->where($wsql)
             ->where($_wsql)
-            ->page($params['page'] ?? $this->page, $params['pagesize'] ?? $this->pagesize)
+            ->page($page, $pagesize)
             ->order($params['orderby'] ?? $this->tablePrimary, $params['orderway'] ?? 'desc')
             ->select();
         $data['total'] = $this->totalCount($params)['count'] ?? 0;
+        $data['page'] = $page;
+        $data['pagesize'] = $pagesize;
         return $data;
     }
 
