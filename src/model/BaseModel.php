@@ -65,8 +65,6 @@ class BaseModel extends Model
         return $data;
     }
 
-
-
     /**
      * 统计数量
      *
@@ -257,7 +255,7 @@ class BaseModel extends Model
     }
 
     /**
-     * 生成单挑信息缓存名称
+     * 生成单条信息缓存名称
      *
      * @description
      * @example
@@ -270,6 +268,30 @@ class BaseModel extends Model
     private function getRowDataCacheName($id)
     {
         return str_replace('_', '-', $this->table) . '-row-data-' . $id;
+    }
+    /**
+     * 生成列表信息缓存名称
+     *
+     * @description
+     * @example
+     * @author LittleMo 25362583@qq.com
+     * @since 2021-07-07
+     * @version 2021-07-07
+     * @param int $id
+     * @return string
+     */
+    private function getListDataCacheName($params = [], $diy_wsql = '')
+    {
+        sort($params);
+        $params['_wsql'] = $diy_wsql;
+        $paramText = '';
+        foreach ($params as $k => $v) {
+            $paramText .= $k . '=' . $k . '&';
+        }
+        $paramText = rtrim($paramText, '&');
+        $name = str_replace('_', '-', $this->table) . '-list-data-';
+        $name .= md5($paramText);
+        return $name;
     }
 
     /**
