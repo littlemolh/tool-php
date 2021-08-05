@@ -26,7 +26,7 @@ class WordToHtml
      * @version 2021-08-05
      * @param string $file  文件路径，仅支持docx类型
      * @param string $cache html缓存路径
-     * @return array
+     * @return boolean
      */
     public function get($file = '', $cache)
     {
@@ -66,7 +66,19 @@ class WordToHtml
         return $result;
     }
 
-    //解析word内容并返回html
+    /**
+     * 解析word内容
+     * 
+     * @description
+     * @example
+     * @author LittleMo 25362583@qq.com
+     * @since 2021-08-05
+     * @version 2021-08-05
+     * @param string $source    docx文件路径
+     * @param string $cache     html缓存路径
+     * @param string $type      解析后文件类型
+     * @return boolean
+     */
     private function wordParsing($source, $cache, $type = "HTML")
     {
         $phpWord = IOFactory::load($source);
@@ -75,10 +87,33 @@ class WordToHtml
         self::$msg['html'] = self::getFile($cache);
         return true;
     }
+
+    /**
+     * 获取word解析内容
+     *
+     * @description
+     * @example
+     * @author LittleMo 25362583@qq.com
+     * @since 2021-08-05
+     * @version 2021-08-05
+     * @return array
+     */
     public function getMessage()
     {
         return self::$msg;
     }
+
+    /**
+     * 获取文件内容
+     *
+     * @description
+     * @example
+     * @author LittleMo 25362583@qq.com
+     * @since 2021-08-05
+     * @version 2021-08-05
+     * @param string $filename
+     * @return string
+     */
     private static function getFile($filename)
     {
         $return = '';
