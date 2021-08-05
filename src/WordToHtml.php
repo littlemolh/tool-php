@@ -28,7 +28,7 @@ class WordToHtml
      * @param string $cache html缓存路径
      * @return boolean
      */
-    public function get($file = '', $cache)
+    public function parsing($file = '', $cache)
     {
         self::$msg = [
             'name' => basename($file)
@@ -56,37 +56,23 @@ class WordToHtml
             }
             self::$msg['size'] = $filesize;
             self::$msg['unit'] = $unit;
-            $result = $this->wordParsing($file, $cache);
+
+            //创建html
+            $phpWord = IOFactory::load($file);
+            $xmlWriter = IOFactory::createWriter($phpWord, "HTML");
+            $xmlWriter->save($cache);
+
+            //读取html内容
+            self::$msg['html'] = self::getFile($cache);
         } catch (\Exception $e) {
             self::$msg['error'] = $e->getMessage();
             self::$msg['errorCode'] = $e->getCode();
-            //throw $th;
         }
 
-        return $result;
-    }
-
-    /**
-     * 解析word内容
-     * 
-     * @description
-     * @example
-     * @author LittleMo 25362583@qq.com
-     * @since 2021-08-05
-     * @version 2021-08-05
-     * @param string $source    docx文件路径
-     * @param string $cache     html缓存路径
-     * @param string $type      解析后文件类型
-     * @return boolean
-     */
-    private function wordParsing($source, $cache, $type = "HTML")
-    {
-        $phpWord = IOFactory::load($source);
-        $xmlWriter = IOFactory::createWriter($phpWord, $type);
-        $xmlWriter->save($cache);
-        self::$msg['html'] = self::getFile($cache);
         return true;
     }
+
+
 
     /**
      * 获取word解析内容
