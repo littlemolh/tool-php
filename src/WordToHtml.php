@@ -42,15 +42,15 @@ class WordToHtml
             }
             $filesize = filesize($file);
             $unit = 'B';
-            if ($filesize > 1024) {
+            if ($filesize >= 1024) {
                 $filesize = bcdiv($filesize, 1024, 2);
                 $unit = "K";
             }
-            if ($filesize > 1024) {
+            if ($filesize >= 1024) {
                 $filesize = bcdiv($filesize, 1024, 2);
                 $unit = "M";
             }
-            if ($filesize > 1024) {
+            if ($filesize >= 1024) {
                 $filesize = bcdiv($filesize, 1024, 2);
                 $unit = "G";
             }
