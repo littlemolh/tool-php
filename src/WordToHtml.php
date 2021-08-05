@@ -11,6 +11,8 @@
 
 namespace littlemo\tool;
 
+use PhpOffice\PhpWord\IOFactory;
+
 class WordToHtml
 {
     static $msg = [];
@@ -57,6 +59,7 @@ class WordToHtml
             $result = $this->wordParsing($file, $cache);
         } catch (\Exception $e) {
             self::$msg['error'] = $e->getMessage();
+            self::$msg['errorCode'] = $e->getCode();
             //throw $th;
         }
 
@@ -66,8 +69,8 @@ class WordToHtml
     //解析word内容并返回html
     private function wordParsing($source, $cache, $type = "HTML")
     {
-        $phpWord = \PhpOffice\PhpWord\IOFactory::load($source);
-        $xmlWriter = \PhpOffice\PhpWord\IOFactory::createWriter($phpWord, $type);
+        $phpWord = IOFactory::load($source);
+        $xmlWriter = IOFactory::createWriter($phpWord, $type);
         $xmlWriter->save($cache);
         self::$msg['html'] = self::getFile($cache);
         return true;
