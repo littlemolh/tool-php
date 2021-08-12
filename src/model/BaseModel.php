@@ -59,10 +59,32 @@ class BaseModel extends Model
             ->page($page, $pagesize)
             ->order($params['orderby'] ?? $this->tablePrimary, $params['orderway'] ?? 'desc')
             ->select();
+        $data['data'] = $this->parseListData($data['data']);
         $data['total'] = $this->totalCount($params)['count'] ?? 0;
         $data['page'] = $page;
+        $data['lastpage'] = ceil($data['total'] / $pagesize);
         $data['pagesize'] = $pagesize;
         return $data;
+    }
+
+    /**
+     * 解析列表数据
+     *
+     * @description
+     * @example
+     * @author LittleMo 25362583@qq.com
+     * @since 2021-08-11
+     * @version 2021-08-11
+     * @param array $data
+     * @return array
+     */
+    public function parseListData($data = [])
+    {
+        $parse_data = array();
+        foreach ($data as $key => $val) {
+            $parse_data[$key] = $val;
+        }
+        return $parse_data;
     }
 
     /**
@@ -167,7 +189,7 @@ class BaseModel extends Model
      * @param array $field  查询字段
      * @return array
      */
-    public function getGroupListData($params = [], $group = '', $field = [])
+    public function getGroupListData($params = [], $group = '', $field = '*')
     {
         $data = [];
 
@@ -191,13 +213,19 @@ class BaseModel extends Model
         //整理字段
         $fields = [];
         $fields[] = ['count(*)' => 'count'];
-        $fields[] = $group;
-        foreach ($field as $val) {
-            $fields[] = $val;
+        if ($field == '*') {
+            $fields[] = '*';
+        } else if (is_array($field)) {
+            $fields[] = $group;
+            foreach ($field as $val) {
+                $fields[] = $val;
+            }
+        } elseif (is_string($field)) {
+            $fields[] = $group;
         }
 
         $data['list'] = $this
-            ->field($field)
+            ->field($fields)
             ->where($wsql)
             // ->order('createtime desc')
             ->group($group)

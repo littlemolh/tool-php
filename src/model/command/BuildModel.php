@@ -24,47 +24,104 @@ class BuildModel extends Command
     protected function configure()
     {
         $this->setName('build-model')
-            ->addArgument('app', Argument::OPTIONAL, "app name,defaule:common") //应用目录，默认：common
-            ->addOption('app', 'a', Option::VALUE_REQUIRED, 'app name') //应用目录，默认：common
+            ->addArgument('app', Argument::OPTIONAL, "app module name,defaule:common") //应用目录，默认：common
+            ->addOption('app', 'a', Option::VALUE_REQUIRED, 'app module name,defaule common') //应用目录，默认：common
             ->addOption('dirpath', 'd', Option::VALUE_REQUIRED, 'dir path')
             ->addOption('prefix', 'p', Option::VALUE_REQUIRED, 'table name prefix') //表名前缀
+            ->addOption('ignorePrefix', 'i', Option::VALUE_REQUIRED, 'file name and class name ignore prefix') //忽略表名前缀,文件名和class名忽略表前缀的存在
             ->setDescription('Here is the remark ');
     }
 
+    static $appname = null;
+    static $dirpath = null;
+    static $prefix = null;
+    static $namespace = null;
+    static $ignorePrefix = true;
+    static $newModel = [];
+
     protected function execute(Input $input, Output $output)
     {
-        $app = 'common';
-        $dir = __DIR__;
-        $prefix = '';
-        if ($input->hasArgument('app')) {
-            $app = trim($input->getArgument('app')) ?: $app;
-        }
 
-        if ($input->hasOption('app')) {
-            $app = $input->getOption('app') ?: $app;
-        }
-        if ($input->hasOption('dir')) {
-            $dir = $input->getOption('dir');
-        } else {
-            $dir = dirname($dir, 2) . '/' . $app . '/model/';
-        }
-        if ($input->hasOption('prefix')) {
-            $prefix = $input->getOption('prefix');
-        }
+        //初始化指令参数
+        $this->_init($input, $output);
 
-        $namespace = 'app\\' . $app . '\\model';
+        //获取新（待创建）模型列表
+        $this->getNewModel($output);
 
-        $newModel = $this->getNewModel($dir, $prefix, $output);
-        $this->createModel($newModel, $dir, $namespace, $output);
+        //创建模型
+        $this->createModel($output);
 
         $output->info("Build Successed!");
     }
-    private function getNewModel($dir, $p, $output)
+
+    /**
+     * 初始化指令参数
+     *
+     * @description
+     * @example
+     * @author LittleMo 25362583@qq.com
+     * @since 2021-08-12
+     * @version 2021-08-12
+     * @param Object $input
+     * @param Object $output
+     * @return void
+     */
+    private function _init($input, $output)
+    {
+        $app = 'common';
+        $dir = APP_PATH;
+        if ($input->hasArgument('app')) {
+            self::$appname = trim($input->getArgument('app')) ?: $app;
+        }
+
+        if ($input->hasOption('app')) {
+            self::$appname = $input->getOption('app') ?: $app;
+        }
+        $output->info('[app module] -> ' . $app);
+
+        if ($input->hasOption('dirpath')) {
+            self::$dirpath = $input->getOption('dirpath');
+        } else {
+            self::$dirpath = $dir  . $app . DS . 'model' . DS;
+        }
+        $output->info('[dirpath]    -> ' .  self::$dirpath);
+
+
+
+        if ($input->hasOption('prefix')) {
+            self::$prefix = $input->getOption('prefix');
+        }
+        $output->info('[prefix]     -> ' . self::$prefix);
+
+        self::$namespace = 'app\\' . $app . '\\model';
+        $output->info('[namespace]  -> ' . self::$namespace);
+
+        if ($input->hasOption('prefix')) {
+            $ignorePrefix = $input->getOption('ignorePrefix');
+            self::$ignorePrefix = $ignorePrefix == 'false' ? false : true;
+        }
+        $output->info('[ignorePrefix]  -> ' . self::$ignorePrefix);
+    }
+
+    /**
+     * 获取新（待创建）模型列表
+     *
+     * @description
+     * @example
+     * @author LittleMo 25362583@qq.com
+     * @since 2021-08-12
+     * @version 2021-08-12
+     * @param Object $output
+     * @return void
+     */
+    private function getNewModel($output)
     {
         $model = $newModel = $files = $tables = [];
         $database = config('database.database');
         $prefix = config('database.prefix');
 
+        $dir =  self::$dirpath;
+        $p = self::$prefix;
 
         //获取model列表
         if (is_dir($dir)) {
@@ -81,30 +138,54 @@ class BuildModel extends Command
         }
         foreach ($tables as $val) {
             $isnew = true;
+
+            //排除非指定前缀表名
             if (!empty($p) && substr($val, 0, strlen($p)) != $p) {
                 continue;
             }
+
+
+            //排除已有模型
+            $tempVar = $val;
+            if (self::$ignorePrefix) {
+                $tempVar = str_replace(self::$prefix, "", $val);
+            }
             foreach ($model as $v) {
-                if ($val == $v || $val == ($prefix . $v)) {
+
+                if ($tempVar == $v || $tempVar == ($prefix . $v)) {
                     $isnew = false;
                     break;
                 }
             }
+
+            //暂存待创建模型
             if ($isnew) {
                 $newModel[] = $val;
             }
         }
-        return $newModel;
+        self::$newModel = $newModel;
     }
-    private function createModel($newModel, $dir, $namespace, $output)
+
+    /**
+     * 创建模型
+     *
+     * @description
+     * @example
+     * @author LittleMo 25362583@qq.com
+     * @since 2021-08-12
+     * @version 2021-08-12
+     * @param Object $output
+     * @return void
+     */
+    private function createModel($output)
     {
         $prefix = config('database.prefix');
-        if (!is_dir($dir)) {
-            mkdir($dir, 0777, true);
+        if (!is_dir(self::$dirpath)) {
+            mkdir(self::$dirpath, 0777, true);
         }
 
 
-        foreach ($newModel as $val) {
+        foreach (self::$newModel as $val) {
             $createTime = 'false';
             $updateTime = 'false';
             $deleteTime = 'false';
@@ -125,9 +206,9 @@ class BuildModel extends Command
             $className = ucwords($this->convertUnderline($table_name));
             $contents = "<?php\n";
             $contents .= "\n";
-            $contents .= "namespace " . $namespace . "; \n";
+            $contents .= "namespace " . self::$namespace . "; \n";
             $contents .= "\n";
-            $contents .= "use littlemo\tool\model\BaseModel; \n";
+            $contents .= "use littlemo\\tool\\model\\BaseModel; \n";
             $contents .= "\n";
             $contents .= "class " . $className . " extends BaseModel \n{ \n";
             $contents .= "    // 表名 \n";
@@ -141,7 +222,7 @@ class BuildModel extends Command
             $contents .= "}";
 
             //要创建的两个文件
-            $fileName = $dir . $className . '.php';
+            $fileName = self::$dirpath . $className . '.php';
             //以读写方式打写指定文件，如果文件不存则创建
             if (($TxtRes = fopen($fileName, "w+")) === FALSE) {
                 $output->info("创建模型 失败 " . $fileName);
@@ -157,19 +238,40 @@ class BuildModel extends Command
         }
     }
 
-    /*
+
+    /**
      * 下划线转驼峰
+     *
+     * @description
+     * @example
+     * @author LittleMo 25362583@qq.com
+     * @since 2021-08-12
+     * @version 2021-08-12
+     * @param string $str
+     * @return void
      */
     static function convertUnderline($str)
     {
+        if (self::$ignorePrefix) {
+            $str = str_replace(self::$prefix, "", $str);
+        }
         $str = preg_replace_callback('/([-_]+([a-z]{1}))/i', function ($matches) {
             return strtoupper($matches[2]);
         }, $str);
         return $str;
     }
 
-    /*
+
+    /**
      * 驼峰转下划线
+     *
+     * @description
+     * @example
+     * @author LittleMo 25362583@qq.com
+     * @since 2021-08-12
+     * @version 2021-08-12
+     * @param string $str
+     * @return void
      */
     static function humpToLine($str)
     {
