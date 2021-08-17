@@ -46,7 +46,7 @@ class BaseModel extends Model
      * @param array $params 筛选条件
      * @return array
      */
-    public function getListData($params = [], $_wsql = '')
+    public function getListData($params = [], $_wsql = '', $with = [])
     {
         $data = [];
         $page =  $params['page'] ?? $this->page;
@@ -56,6 +56,7 @@ class BaseModel extends Model
 
         $data['data'] = $this->where($wsql)
             ->where($_wsql)
+            ->with($with)
             ->page($page, $pagesize)
             ->order($params['orderby'] ?? $this->tablePrimary, $params['orderway'] ?? 'desc')
             ->select();
