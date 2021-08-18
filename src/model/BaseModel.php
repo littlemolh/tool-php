@@ -28,6 +28,7 @@ class BaseModel extends Model
     protected $tablePrimary = 'id';
     protected $deleteTime = false;
 
+    protected $aliasName = 'a';
     protected $page = 1;
     protected $pagesize = 10;
 
@@ -54,7 +55,9 @@ class BaseModel extends Model
 
         $wsql = $this->commonWsql($params);
 
-        $data['data'] = $this->where($wsql)
+        $data['data'] = $this
+            ->alias($this->aliasName)
+            ->where($wsql)
             ->where($_wsql)
             ->with($with)
             ->page($page, $pagesize)
@@ -110,17 +113,17 @@ class BaseModel extends Model
         $end_time = !empty($params['end_date']) ? strtotime($params['end_date']) : 0;
 
         if (empty($start_time)) {
-            $start_time = $this->where($wsql)->min($this->createTime);
+            $start_time = $this->alias($this->aliasName)->where($wsql)->min($this->createTime);
         } else {
             $wsql .= !empty($start_time) ? ' AND ' . $this->createTime . ' >' . $start_time  : null;
         }
         if (empty($end_time)) {
-            $end_time = $this->where($wsql)->max($this->createTime);
+            $end_time = $this->alias($this->aliasName)->where($wsql)->max($this->createTime);
         } else {
             $wsql .= !empty($end_time) ? ' AND ' . $this->createTime . ' <' . $end_time  : null;
         }
 
-        $data['count'] = $this->where($wsql)->count();
+        $data['count'] = $this->alias($this->aliasName)->where($wsql)->count();
 
         $data['start_time'] = $start_time;
         $data['start_date'] = date('Y-m-d H:i:s', $start_time);
