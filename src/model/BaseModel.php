@@ -86,11 +86,11 @@ class BaseModel extends Model
      */
     public function parseListData($data = [])
     {
-        $parse_data = array();
+        $parseData = array();
         foreach ($data as $key => $val) {
-            $parse_data[$key] = $val;
+            $parseData[$key] = $val;
         }
-        return $parse_data;
+        return $parseData;
     }
 
     /**
@@ -180,7 +180,11 @@ class BaseModel extends Model
     protected  function commonWsql($params = [])
     {
         $wsql = '1=1';
-        return $wsql;
+        unset($params['pagesize']);
+        unset($params['page']);
+        unset($params['orderby']);
+        unset($params['orderway']);
+        return $params;
     }
     /**
      * 分组统计
