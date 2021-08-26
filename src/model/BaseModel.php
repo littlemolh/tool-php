@@ -212,7 +212,7 @@ class BaseModel extends Model
      * @param array $field  查询字段
      * @return array
      */
-    public function getGroupListData($params = [], $group = '', $field = '*')
+    public function getGroupListData($params = [], $group = '', $field = '*', $with = [])
     {
         $data = [];
 
@@ -234,10 +234,10 @@ class BaseModel extends Model
         }
 
         //整理字段
-        $fields = [];
-        $fields[] = ['count(*)' => 'count'];
+        $fields = null;
+
         if ($field == '*') {
-            $fields[] = '*';
+            $fields = '*';
         } else if (is_array($field)) {
             $fields[] = $group;
             foreach ($field as $val) {
@@ -246,11 +246,16 @@ class BaseModel extends Model
         } elseif (is_string($field)) {
             $fields[] = $group;
         }
-
+        if (is_string($fields)) {
+            $fields .= ',count(*) as count ';
+        } else {
+            $fields[] = ' count(*) as count ';
+        }
         $data['list'] = $this
             ->field($fields)
+            ->with($with)
             ->where($wsql)
-            // ->order('createtime desc')
+            ->order('count desc')
             ->group($group)
             ->page($params['page'] ?? $this->page, $params['pagesize'] ?? $this->pagesize)
             ->select();
