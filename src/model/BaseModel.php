@@ -56,7 +56,7 @@ class BaseModel extends Model
         $orderby = $params['orderby'] ?? $this->tablePrimary;
         $orderway = $params['orderway'] ?? 'desc';
 
-        $wsql = $this->commonWsql($params);
+        $wsql = $this->commonWsql($params, $with);
 
         $data['data'] = $this
             ->alias($this->aliasName)
@@ -184,6 +184,19 @@ class BaseModel extends Model
         unset($params['page']);
         unset($params['orderby']);
         unset($params['orderway']);
+        if (!empty($with)) {
+            foreach ($params as $key => $val) {
+                if (is_array($val)) {
+                    if (strpos($val[1], '.') === false) {
+                        $params[$key][1] = $this->aliasName . '.' . $params[$key][1];
+                    }
+                } else {
+                    if (strpos($val, '.') === false) {
+                        $params[$key] = $this->aliasName . '.' . $params[$key];
+                    }
+                }
+            }
+        }
         return $params;
     }
     /**
