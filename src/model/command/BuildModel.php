@@ -219,7 +219,7 @@ class BuildModel extends Command
             $contents .= '    protected $updateTime = ' . $updateTime . ';' . " \n";
             $contents .= '    protected $deleteTime = ' . $deleteTime . ';' . " \n";
             $contents .= "\n";
-            $contents .= '    protected $aliasName = \'' . $table_name . '\';' . " \n";
+            $contents .= '    protected $aliasName = \'' . $this->humpToLine($className) . '\';' . " \n";
             $contents .= "    // 追加属性 \n";
             $contents .= '    protected $append = [];' . " \n";
             $contents .= "}";
