@@ -47,24 +47,26 @@ class BaseModel extends Model
      * @param array $params 筛选条件
      * @return array
      */
-    public function getListData($params = [], $_wsql = '', $with = [])
+    public function getListData($params = [], $with = [])
     {
         $data = [];
+
         $page =  $params['page'] ?? $this->page;
         $pagesize = $params['pagesize'] ?? $this->pagesize;
+        $orderby = $params['orderby'] ?? $this->tablePrimary;
+        $orderway = $params['orderway'] ?? 'desc';
 
         $wsql = $this->commonWsql($params);
 
         $data['data'] = $this
             ->alias($this->aliasName)
             ->where($wsql)
-            ->where($_wsql)
             ->with($with)
             ->page($page, $pagesize)
-            ->order($params['orderby'] ?? $this->tablePrimary, $params['orderway'] ?? 'desc')
+            ->order($orderby, $orderway)
             ->select();
         $data['data'] = $this->parseListData($data['data']);
-        $data['total'] = $this->totalCount($params)['count'] ?? 0;
+        $data['total'] = $this->totalCount($params, $with)['count'] ?? 0;
         $data['page'] = $page;
         $data['lastpage'] = ceil($data['total'] / $pagesize);
         $data['pagesize'] = $pagesize;

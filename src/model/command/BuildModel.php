@@ -204,6 +204,7 @@ class BuildModel extends Command
 
             $table_name = str_replace($prefix, "", $val);
             $className = ucwords($this->convertUnderline($table_name));
+
             $contents = "<?php\n";
             $contents .= "\n";
             $contents .= "namespace " . self::$namespace . "; \n";
@@ -217,6 +218,8 @@ class BuildModel extends Command
             $contents .= '    protected $createTime = ' . $createTime . ';' . " \n";
             $contents .= '    protected $updateTime = ' . $updateTime . ';' . " \n";
             $contents .= '    protected $deleteTime = ' . $deleteTime . ';' . " \n";
+            $contents .= "\n";
+            $contents .= '    protected $aliasName = ' . $className . ';' . " \n";
             $contents .= "    // 追加属性 \n";
             $contents .= '    protected $append = [];' . " \n";
             $contents .= "}";
