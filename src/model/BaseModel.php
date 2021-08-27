@@ -180,15 +180,13 @@ class BaseModel extends Model
     protected  function commonWsql($params = [])
     {
         $wsql = '1=1';
-        unset($params['pagesize']);
-        unset($params['page']);
-        unset($params['orderby']);
-        unset($params['orderway']);
+
         foreach ($params as $key => $val) {
-            if (empty($val)) {
+            if (in_array($key, ['pagesize', 'page', 'orderby', 'orderway']) || empty($val)) {
                 unset($params[$key]);
                 continue;
             }
+
             if (!empty($with)) {
                 if (is_array($val)) {
                     if (strpos($val[1], '.') === false) {
