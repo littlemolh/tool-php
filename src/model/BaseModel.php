@@ -184,8 +184,12 @@ class BaseModel extends Model
         unset($params['page']);
         unset($params['orderby']);
         unset($params['orderway']);
-        if (!empty($with)) {
-            foreach ($params as $key => $val) {
+        foreach ($params as $key => $val) {
+            if (empty($val)) {
+                unset($params[$key]);
+                continue;
+            }
+            if (!empty($with)) {
                 if (is_array($val)) {
                     if (strpos($val[1], '.') === false) {
                         $params[$key][1] = $this->aliasName . '.' . $params[$key][1];
