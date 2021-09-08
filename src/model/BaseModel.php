@@ -51,8 +51,8 @@ class BaseModel extends Model
     {
         $data = [];
 
-        $page =  $params['page'] ?? $this->page;
-        $pagesize = $params['pagesize'] ?? $this->pagesize;
+        $page =  ($params['page'] ?? $this->page) ?: $this->page;
+        $pagesize = ($params['pagesize'] ?? $this->pagesize) ?: $this->pagesize;
         $orderby = $params['orderby'] ?? $this->tablePrimary;
         $orderway = $params['orderway'] ?? 'desc';
 
@@ -182,7 +182,7 @@ class BaseModel extends Model
         $wsql = '1=1';
 
         foreach ($params as $key => $val) {
-            if (in_array($key, ['pagesize', 'page', 'orderby', 'orderway']) || empty($val)) {
+            if (in_array($key, ['pagesize', 'page', 'orderby', 'orderway']) || strlen($val) <= 0) {
                 unset($params[$key]);
                 continue;
             }
