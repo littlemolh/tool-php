@@ -177,26 +177,25 @@ class BaseModel extends Model
     }
 
 
-    protected  function commonWsql($params = [])
+    protected  function commonWsql($params = [], $with = [])
     {
         $wsql = '1=1';
 
         foreach ($params as $key => $val) {
-            if (in_array($key, ['pagesize', 'page', 'orderby', 'orderway']) || strlen($val) <= 0) {
+            //过滤分页和排序
+            if (in_array($key, ['pagesize', 'page', 'orderby', 'orderway'])) {
+                unset($params[$key]);
+                continue;
+            }
+            //过滤空字段
+            if ((!is_array($val) && strlen($val) <= 0) || (is_array($val) && strlen($val[1]) <= 0)) {
                 unset($params[$key]);
                 continue;
             }
 
-            if (!empty($with)) {
-                if (is_array($val)) {
-                    if (strpos($val[1], '.') === false) {
-                        $params[$key][1] = $this->aliasName . '.' . $params[$key][1];
-                    }
-                } else {
-                    if (strpos($val, '.') === false) {
-                        $params[$key] = $this->aliasName . '.' . $params[$key];
-                    }
-                }
+            if (!empty($with) && strpos($key, '.') === false) {
+                $params[$this->aliasName . '.' . $key] = $val;
+                unset($params[$key]);
             }
         }
         return $params;
