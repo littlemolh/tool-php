@@ -187,10 +187,29 @@ class BaseModel extends Model
                 unset($params[$key]);
                 continue;
             }
+
             //过滤空字段
-            if ((!is_array($val) && strlen($val) <= 0) || (is_array($val) && strlen($val[1]) <= 0)) {
+            if (!is_array($val) && strlen($val) <= 0) {
                 unset($params[$key]);
                 continue;
+            } elseif (is_array($val)) {
+                if (count($val) == 3) {
+                    //区间查询
+                    if (empty($val[0][1]) && empty($val[1][1])) {
+                        unset($params[$key]);
+                        continue;
+                    } else {
+                        if (empty($val[0][1])) {
+                            $params[$key] = $val[1];
+                        } else
+                        if (empty($val[1][1])) {
+                            $params[$key] = $val[0];
+                        }
+                    }
+                } elseif ((!is_array($val[1]) && strlen($val[1]) <= 0) || (is_array($val[1]) && count($val[1]) <= 0)) {
+                    unset($params[$key]);
+                    continue;
+                }
             }
 
             if (!empty($with) && strpos($key, '.') === false) {
