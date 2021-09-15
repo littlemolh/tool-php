@@ -27,13 +27,17 @@ class Code2Session extends Common
         $this->appid = $appid;
         $this->secret = $secret;
     }
-    /*
-     * TODO 获取用户小程序openid
-     * @Author ctocode-sxd
-     * @param unknown $config
-     * @param string $type[平台类型。公众号：gzh；小程序：miniapp；]
-     * @return mixed
-     * @Date 2019-12-12 14:45
+
+    /**
+     * 获取用户小程序openid
+     *
+     * @description
+     * @example
+     * @author LittleMo 25362583@qq.com
+     * @since 2021-09-15
+     * @version 2021-09-15
+     * @param string $code
+     * @return array
      */
     public function Code2Openid($code)
     {
@@ -50,7 +54,7 @@ class Code2Session extends Common
     }
 
     /**
-     * Undocumented function
+     * 解 加密后的敏感数据
      *
      * @description
      * @example
@@ -60,20 +64,26 @@ class Code2Session extends Common
      * @param array $config
      * @return array
      */
-    public function Code2Data($config)
+    public function Code2Data($config, $iv)
     {
         $pc = new WXBizDataCrypt($this->appid, $config['sessionKey']);
 
-        $errCode = $pc->decryptData($config['encryptedData'], $config['iv'], $data); // 其中$data包含用户的所有数据
-
+        if (!empty($iv)) {
+            $encryptedData = $config;
+        } else {
+            $iv = $config['iv'];
+            $encryptedData = $config['encryptedData'];
+        }
+        $errCode = $pc->decryptData($encryptedData, $iv, $data); // 其中$data包含用户的所有数据
+        $date = [];
         if ($errCode == 0) {
             $data = json_decode($data, true);
-            $data['status'] = 200;
-            return $data;
+            $data['status'] = 200; //即将遗弃，请勿使用
+        } else {
+            $date['err_code'] = $errCode;
+            $date['status'] = 500; //即将遗弃，请勿使用
+            $date['msg'] = $errCode; //即将遗弃，请勿使用
         }
-        return array(
-            'status' => 500,
-            'msg' => $errCode
-        );
+        return $date;
     }
 }
