@@ -65,7 +65,7 @@ class BaseModel extends Model
             ->page($page, $pagesize)
             ->order($orderby, $orderway)
             ->select();
-        $data['data'] = $this->parseListData($data['data']);
+        $this->parseListData($data['data']);
         $data['total'] = $this->totalCount($params, $with)['count'] ?? 0;
         $data['page'] = $page;
         $data['lastpage'] = ceil($data['total'] / $pagesize);
@@ -84,13 +84,10 @@ class BaseModel extends Model
      * @param array $data
      * @return array
      */
-    public function parseListData($data = [])
+    public function parseListData(&$data = [])
     {
-        $parseData = array();
-        foreach ($data as $key => $val) {
-            $parseData[$key] = $val;
+        foreach ($data as $key => &$val) {
         }
-        return $parseData;
     }
 
     /**
