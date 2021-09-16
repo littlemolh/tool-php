@@ -153,16 +153,73 @@ class Zip
     }
 
     /**
-     * 添加文件
+     * 添加一个文件 可自定义文件在压缩包的路径和名称
      *
      * @description
      * @example
      * @author LittleMo 25362583@qq.com
-     * @since 2021-07-26
-     * @version 2021-07-26
+     * @since 2021-09-16
+     * @version 2021-09-16
+     * @param string $filename      文件路径
+     * @param string $zipFilename   添加至压缩包指定目录或者路径
      * @return void
      */
-    public static function addFile($dir = null, $zip_root_path = '')
+    public static function addFile($filename = null, $zipFilename = '')
+    {
+
+        try {
+            if (self::$zip == null) {
+                self::create();
+            }
+            if (self::$error != null) {
+                throw new \Exception();
+            }
+
+            if (!is_file($filename)) {
+                throw new \Exception('文件[' . $filename . '] 不存在');
+            }
+
+            $filename = File::getRealPath($filename);
+            $zipFilename = File::getRealPath($zipFilename);
+
+            $filenameInfo = pathinfo($filename);
+
+            $zipFilename = rtrim($zipFilename, '/');
+            $zipFilename = rtrim($zipFilename, '\\');
+            if (empty($zipFilename)) {
+                //无自定义路径或者文件名时，默认使用文件的basename
+                $zipPath = $filenameInfo['basename'];
+            } else {
+                $zipPath = $zipFilename;
+                if (pathinfo($zipPath, PATHINFO_EXTENSION) == '') {
+                    $zipPath .= '/' . $filenameInfo['basename'];
+                }
+            }
+
+            if (self::$zip->addFile($filename, $zipPath) != true) {
+                throw new \Exception('文件[' . $filename . ']添加至压缩包[' . $zipPath . ']失败');
+            }
+
+            return true;
+        } catch (\Exception $e) {
+            self::addErrormsg($e->getMessage());
+            return false;
+        }
+    }
+
+    /**
+     * 添加一个文件夹下的所有文件 可自定义文件在压缩包的根目录
+     *
+     * @description
+     * @example
+     * @author LittleMo 25362583@qq.com
+     * @since 2021-09-16
+     * @version 2021-09-16
+     * @param string $dir           要添加文件的文件夹路径
+     * @param string $zip_root_path 添加至压缩包指定目录下
+     * @return void
+     */
+    public static function addFiles($dir = null, $zip_root_path = '')
     {
         try {
             if (self::$zip == null) {
@@ -195,7 +252,7 @@ class Zip
     }
 
     /**
-     * 添加文件
+     * 保存文件
      *
      * @description
      * @example
@@ -230,7 +287,17 @@ class Zip
         return implode("\n", self::$error ?: []);
     }
 
-
+    /**
+     * 获取指定目录下文件列表
+     *
+     * @description
+     * @example
+     * @author LittleMo 25362583@qq.com
+     * @since 2021-09-16
+     * @version 2021-09-16
+     * @param string $dir 文件夹路径
+     * @return array
+     */
     private static function getFile($dir = null)
     {
         $dir = File::getRealPath($dir);
@@ -253,8 +320,8 @@ class Zip
         return ['dir' => $newDir, 'list' => $fileList];
     }
 
-    private static function addErrormsg($msg)
+    private static function addErrormsg($msg = '未知错误')
     {
-        self::$error[] = '文件打开或创建失败';
+        self::$error[] = $msg;
     }
 }
