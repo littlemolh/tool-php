@@ -25,10 +25,6 @@ namespace littlemo\tool\wechat\pay;
 class Transfers extends Common
 {
 
-    /**
-     *  请求Url
-     */
-    protected $url = 'https://api.mch.weixin.qq.com/mmpaymkttransfers/promotion/transfers';
 
     /**
      * 校验用户姓名选项	
@@ -99,7 +95,7 @@ class Transfers extends Common
      */
     public function create($openid,  $money, $orderNo, $desc = '提现', $userName = '')
     {
-        $this->url = 'https://api.mch.weixin.qq.com/mmpaymkttransfers/promotion/transfers';
+        $url = 'https://api.mch.weixin.qq.com/mmpaymkttransfers/promotion/transfers';
 
         //整理请求参数
         $params = [
@@ -116,7 +112,7 @@ class Transfers extends Common
         $params['sign'] = $this->createSign($params); //签名
 
         //发起请求
-        $result = $this->request($this->url, $this->data_to_xml($params), true);
+        $result = $this->request($url, $this->data_to_xml($params), true);
 
         //解析请求结果
         $obj = simplexml_load_string($result, "SimpleXMLElement", LIBXML_NOCDATA);
@@ -147,7 +143,7 @@ class Transfers extends Common
      */
     public function get($orderNo)
     {
-        $this->url = 'https://api.mch.weixin.qq.com/mmpaymkttransfers/gettransferinfo';
+        $url = 'https://api.mch.weixin.qq.com/mmpaymkttransfers/gettransferinfo';
 
         //整理请求参数
         $params = [
@@ -159,7 +155,7 @@ class Transfers extends Common
         $params['sign'] = $this->createSign($params); //签名
 
         //发起请求
-        $result = $this->request($this->url, $this->data_to_xml($params), true);
+        $result = $this->request($url, $this->data_to_xml($params), true);
 
         //解析请求结果
         $obj = simplexml_load_string($result, "SimpleXMLElement", LIBXML_NOCDATA);
