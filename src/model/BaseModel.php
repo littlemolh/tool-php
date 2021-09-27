@@ -106,23 +106,25 @@ class BaseModel extends Model
         $data = [];
 
         $wsql = $this->commonWsql($params);
-
+        $wsql_time = '';
         //处理时间-若不限定时间则查询数据的开始和结束时间
         $start_time = !empty($params['start_date']) ? strtotime($params['start_date']) : 0;
         $end_time = !empty($params['end_date']) ? strtotime($params['end_date']) : 0;
 
-        if (empty($start_time)) {
-            $start_time = $this->alias($this->aliasName)->where($wsql)->min($this->createTime);
-        } else {
-            $wsql .= !empty($start_time) ? ' AND ' . $this->createTime . ' >' . $start_time  : null;
-        }
-        if (empty($end_time)) {
-            $end_time = $this->alias($this->aliasName)->where($wsql)->max($this->createTime);
-        } else {
-            $wsql .= !empty($end_time) ? ' AND ' . $this->createTime . ' <' . $end_time  : null;
+        if ($this->createTime) {
+            if (empty($start_time)) {
+                $start_time = $this->alias($this->aliasName)->where($wsql)->min($this->createTime);
+            } else {
+                $wsql_time .= !empty($start_time) ? ' AND ' . $this->createTime . ' >' . $start_time  : null;
+            }
+            if (empty($end_time)) {
+                $end_time = $this->alias($this->aliasName)->where($wsql)->max($this->createTime);
+            } else {
+                $wsql_time .= !empty($end_time) ? ' AND ' . $this->createTime . ' <' . $end_time  : null;
+            }
         }
 
-        $data['count'] = $this->alias($this->aliasName)->where($wsql)->count();
+        $data['count'] = $this->alias($this->aliasName)->where($wsql)->where($wsql_time)->count();
 
         $data['start_time'] = $start_time;
         $data['start_date'] = date('Y-m-d H:i:s', $start_time);
@@ -148,23 +150,25 @@ class BaseModel extends Model
         $data = [];
 
         $wsql = $this->commonWsql($params);
-
+        $wsql_time = '';
         //处理时间-若不限定时间则查询数据的开始和结束时间
         $start_time = !empty($params['start_date']) ? strtotime($params['start_date']) : 0;
         $end_time = !empty($params['end_date']) ? strtotime($params['end_date']) : 0;
 
-        if (empty($start_time)) {
-            $start_time = $this->where($wsql)->min($this->createTime);
-        } else {
-            $wsql .= !empty($start_time) ? ' AND ' . $this->createTime . ' >' . $start_time  : null;
-        }
-        if (empty($end_time)) {
-            $end_time = $this->where($wsql)->max($this->createTime);
-        } else {
-            $wsql .= !empty($end_time) ? ' AND ' . $this->createTime . ' <' . $end_time  : null;
+        if ($this->createTime) {
+            if (empty($start_time)) {
+                $start_time = $this->where($wsql)->min($this->createTime);
+            } else {
+                $wsql_time .= !empty($start_time) ? ' AND ' . $this->createTime . ' >' . $start_time  : null;
+            }
+            if (empty($end_time)) {
+                $end_time = $this->where($wsql)->max($this->createTime);
+            } else {
+                $wsql_time .= !empty($end_time) ? ' AND ' . $this->createTime . ' <' . $end_time  : null;
+            }
         }
 
-        $data[$field . '_sum'] = $this->where($wsql)->sum($field);
+        $data[$field . '_sum'] = $this->where($wsql)->where($wsql_time)->sum($field);
 
         $data['start_time'] = $start_time;
         $data['start_date'] = date('Y-m-d H:i:s', $start_time);
@@ -176,7 +180,6 @@ class BaseModel extends Model
 
     protected  function commonWsql($params = [], $with = [])
     {
-        $wsql = '1=1';
 
         foreach ($params as $key => $val) {
             //过滤分页和排序
