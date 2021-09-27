@@ -14,21 +14,15 @@ namespace littlemo\tool\wechat\pay;
 
 /**
  * 现金红包
- * 微信公众号专用 小程序不能用
+ * 微信小程序专用
  * @description
  * @example
  * @author LittleMo 25362583@qq.com
  * @since 2021-09-25
  * @version 2021-09-25
  */
-class Redpack extends Common
+class RedpackMp extends Common
 {
-
-
-    /**
-     * 当前服务器IP地址
-     */
-    static $ip = null;
 
     /**
      * 构造函数
@@ -43,9 +37,8 @@ class Redpack extends Common
      * @param string $certPath  证书路径
      * @param string $keyPath   证书密钥路径
      * @param string $appid     应用appid
-     * @param string $ip        发情请求的IP地址（服务端IP地址）
      */
-    public function __construct($mchid, $key, $certPath, $keyPath, $appid, $ip)
+    public function __construct($mchid, $key, $certPath, $keyPath, $appid)
     {
         self::$mchid = $mchid;
         self::$key = $key;
@@ -54,12 +47,11 @@ class Redpack extends Common
         $this->sslKeyPath = $keyPath;
 
         self::$appid = $appid;
-        self::$ip = $ip;
     }
 
     /**
-     * 发放微信红包
-     * 文档 https://pay.weixin.qq.com/wiki/doc/api/tools/cash_coupon.php?chapter=13_4&index=3
+     * 发放小程序红包
+     * 文档 https://pay.weixin.qq.com/wiki/doc/api/tools/cash_coupon_xcx.php?chapter=18_2&index=3
      * @description
      * @example
      * @author LittleMo 25362583@qq.com
@@ -70,7 +62,6 @@ class Redpack extends Common
      * @param string    $no         订单编号
      * @param array     $redpack    红包内容:活动名称、祝福语和备注      
      * @param int       $total_num  红包发放人数   
-     * @param string    $type       类型(gzh:公众号;mp:小程序)   
      * @return void
      */
     public function create($openid,  $money = '0.00', $no, $redpack = [], $total_num = 1)
@@ -80,7 +71,7 @@ class Redpack extends Common
          * 请求方式	POST
          * 超时时间（同笔订单最短重试时间）	1s
          */
-        $url = 'https://api.mch.weixin.qq.com/mmpaymkttransfers/sendredpack';
+        $url = 'https://api.mch.weixin.qq.com/mmpaymkttransfers/sendminiprogramhb';
 
 
         $params = [];
@@ -95,7 +86,7 @@ class Redpack extends Common
         $params['total_amount'] = bcmul($money, 100); //付款金额，单位分
         $params['total_num'] = $total_num; //红包发放总人数
 
-        $params['client_ip'] = self::$ip; //调用接口的机器Ip地址
+        $params['notify_way'] = 'MINI_PROGRAM_JSAPI'; //调用接口的机器Ip地址
 
         $params['wishing'] = $redpack['wishing']; //红包祝福语 注意：敏感词会被转义成字符*
         $params['act_name'] = $redpack['act_name']; //活动名称 注意：敏感词会被转义成字符*
@@ -125,10 +116,47 @@ class Redpack extends Common
         return true;
     }
 
+    /**
+     * 领取红包接口
+     * 文档 https://pay.weixin.qq.com/wiki/doc/api/tools/cash_coupon_xcx.php?chapter=18_3&index=4
+     * @description
+     * @example
+     * @author LittleMo 25362583@qq.com
+     * @since 2021-09-25
+     * @version 2021-09-25
+     * @param string    $package    商户将红包信息组成该串，具体方案参见package的说明，package需要进行urlencode再传给页面
+     * @return void
+     */
+    public function biz_red_packet($package)
+    {
+        /**
+         * 小程序端调用方式
+         *
+            wx. sendBizRedPacket ({
+                "timeStamp": "", // 支付签名时间戳，
+                "nonceStr": "", // 支付签名随机串，不长于 32 位
+                "package": "", //扩展字段，由商户传入
+                "signType": "", // 签名方式，
+                "paySign": "", // 支付签名
+                "success":function(res){},
+                "fail":function(res){},
+                "complete":function(res){}
+            })
+         */
+        $params = [];
+        $params['timeStamp'] = (string)time();
+        $params['nonceStr'] =  $this->createNonceStr(); //随机字符串
+        $params['package'] =  urlencode($package); //随机字符串
+        $params['paySign'] = $this->createSign($params); //签名
+
+        $params['signType'] =  'MD5'; //随机字符串
+
+        return  $params;
+    }
 
     /**
      * 查询红包记录
-     * 文档 https://pay.weixin.qq.com/wiki/doc/api/tools/cash_coupon.php?chapter=13_6&index=5
+     * 文档 https://pay.weixin.qq.com/wiki/doc/api/tools/cash_coupon_xcx.php?chapter=18_6&index=5
      * @description
      * @example
      * @author LittleMo 25362583@qq.com
