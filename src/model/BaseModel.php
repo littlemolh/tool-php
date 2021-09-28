@@ -101,30 +101,42 @@ class BaseModel extends Model
      * @param array $params 筛选条件
      * @return array
      */
-    public function totalCount($params = [])
+    public function totalCount($params = [], $with = [])
     {
         $data = [];
 
         $wsql = $this->commonWsql($params);
-        $wsql_time = '';
+        $wsql_time = [];
         //处理时间-若不限定时间则查询数据的开始和结束时间
         $start_time = !empty($params['start_date']) ? strtotime($params['start_date']) : 0;
         $end_time = !empty($params['end_date']) ? strtotime($params['end_date']) : 0;
 
         if ($this->createTime) {
             if (empty($start_time)) {
-                $start_time = $this->alias($this->aliasName)->where($wsql)->min($this->createTime);
+                $start_time = $this
+                    ->alias($this->aliasName)
+                    ->with($with)
+                    ->where($wsql)
+                    ->min($this->aliasName . '.' . $this->createTime);
             } else {
-                $wsql_time .= !empty($start_time) ? ' AND ' . $this->createTime . ' >' . $start_time  : null;
+                !empty($start_time) && $wsql_time[$this->aliasName . '.' . $this->createTime] = ['>', $start_time];
             }
             if (empty($end_time)) {
-                $end_time = $this->alias($this->aliasName)->where($wsql)->max($this->createTime);
+                $end_time = $this
+                    ->alias($this->aliasName)
+                    ->with($with)->where($wsql)
+                    ->max($this->aliasName . '.' . $this->createTime);
             } else {
-                $wsql_time .= !empty($end_time) ? ' AND ' . $this->createTime . ' <' . $end_time  : null;
+                !empty($end_time) && $wsql_time[$this->aliasName . '.' . $this->createTime] = ['<=', $end_time];
             }
         }
 
-        $data['count'] = $this->alias($this->aliasName)->where($wsql)->where($wsql_time)->count();
+        $data['count'] = $this
+            ->alias($this->aliasName)
+            ->with($with)
+            ->where($wsql)
+            ->where($wsql_time)
+            ->count();
 
         $data['start_time'] = $start_time;
         $data['start_date'] = date('Y-m-d H:i:s', $start_time);
