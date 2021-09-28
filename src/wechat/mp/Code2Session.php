@@ -64,26 +64,27 @@ class Code2Session extends Common
      * @param array $config
      * @return array
      */
-    public function Code2Data($config, $iv)
+    public function Code2Data($config, $iv = '', $session_key = '')
     {
-        $pc = new WXBizDataCrypt($this->appid, $config['sessionKey']);
-
-        if (!empty($iv)) {
-            $encryptedData = $config;
-        } else {
+        if (is_array($config)) {
+            $encrypted_data = $config['encryptedData'];
             $iv = $config['iv'];
-            $encryptedData = $config['encryptedData'];
+            $session_key = $config['sessionKey'];
+        } else {
+            $encrypted_data = $config;
         }
-        $errCode = $pc->decryptData($encryptedData, $iv, $data); // 其中$data包含用户的所有数据
-        $date = [];
+
+        $pc = new WXBizDataCrypt($this->appid, $session_key);
+
+        $errCode = $pc->decryptData($encrypted_data, $iv, $data); // 其中$data包含用户的所有数据
         if ($errCode == 0) {
             $data = json_decode($data, true);
             $data['status'] = 200; //即将遗弃，请勿使用
         } else {
-            $date['err_code'] = $errCode;
-            $date['status'] = 500; //即将遗弃，请勿使用
-            $date['msg'] = $errCode; //即将遗弃，请勿使用
+            $data['err_code'] = $errCode;
+            $data['status'] = 500; //即将遗弃，请勿使用
+            $data['msg'] = $errCode; //即将遗弃，请勿使用
         }
-        return $date;
+        return $data;
     }
 }
