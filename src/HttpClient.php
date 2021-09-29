@@ -41,7 +41,7 @@ class HttpClient
      * HttpClient
      * @param array $headers HTTP header
      */
-    public function __construct($headers = array(), $connectTimeout = 60000, $socketTimeout = 60000, $conf = [])
+    public function __construct($headers = [], $connectTimeout = 60000, $socketTimeout = 60000, $conf = [])
     {
         self::$headers = self::buildHeaders($headers);
         self::$connectTimeout = $connectTimeout;
@@ -51,20 +51,20 @@ class HttpClient
 
     /**
      * 连接超时
-     * @param int $ms 毫秒
+     * @param int $s 秒
      */
-    public function setConnectionTimeoutInMillis($ms)
+    public function setConnectionTimeoutInMillis($s)
     {
-        self::$connectTimeout = $ms;
+        self::$connectTimeout = $s;
     }
 
     /**
      * 响应超时
-     * @param int $ms 毫秒
+     * @param int $s 秒
      */
-    public function setSocketTimeoutInMillis($ms)
+    public function setSocketTimeoutInMillis($s)
     {
-        self::$socketTimeout = $ms;
+        self::$socketTimeout = $s;
     }
 
     /**
@@ -94,35 +94,9 @@ class HttpClient
      * @param  array $headers HTTP header
      * @return array
      */
-    public function post($url, $data = array(), $params = array(), $headers = array())
+    public function post($url, $data = [], $params = [], $headers = [])
     {
-        $url = $this->buildUrl($url, $params);
-        $headers = array_merge(self::$headers, self::buildHeaders($headers));
-
-        $ch = curl_init();
-        $this->prepare($ch);
-        curl_setopt($ch, CURLOPT_URL, $url);
-        curl_setopt($ch, CURLOPT_POST, 1);
-        curl_setopt($ch, CURLOPT_HEADER, false);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, is_array($data) ? http_build_query($data) : $data);
-        curl_setopt($ch, CURLOPT_TIMEOUT, self::$socketTimeout);
-        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, self::$connectTimeout);
-        $content = curl_exec($ch);
-        $code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-
-        if ($code === 0) {
-            $error_des = curl_error($ch);
-        }
-
-        curl_close($ch);
-        return array(
-            'code' => $code,
-            'content' => $content,
-            'error_des' => $error_des ?? '',
-        );
+        return $this->request($url, $data, $params, $headers, 'POST');
     }
 
     /**
@@ -132,13 +106,13 @@ class HttpClient
      * @param  array $headers HTTP header
      * @return array
      */
-    public function multi_post($url, $datas = array(), $params = array(), $headers = array())
+    public function multi_post($url, $datas = [], $params = [], $headers = [])
     {
         $url = $this->buildUrl($url, $params);
         $headers = array_merge(self::$headers, self::buildHeaders($headers));
 
-        $chs = array();
-        $result = array();
+        $chs = [];
+        $result = [];
         $mh = curl_multi_init();
         foreach ($datas as $data) {
             $ch = curl_init();
@@ -178,11 +152,30 @@ class HttpClient
 
     /**
      * @param  string $url
-     * @param  array $param HTTP URL
+     * @param  array $params HTTP URL
      * @param  array $headers HTTP header
      * @return array
      */
-    public function get($url, $params = array(), $headers = array())
+    public function get($url, $params = [], $headers = [])
+    {
+        return $this->request($url, [], $params, $headers, 'GET');
+    }
+
+    /**
+     * 发起请求，自动识别是post还是get
+     *
+     * @description
+     * @example
+     * @author LittleMo 25362583@qq.com
+     * @since 2021-09-29
+     * @version 2021-09-29
+     * @param [type] $url
+     * @param array $data
+     * @param array $params
+     * @param array $headers
+     * @return void
+     */
+    public function request($url, $data = [], $params = [], $headers = [], $type = 'GET')
     {
         $url = $this->buildUrl($url, $params);
         $headers = array_merge(self::$headers, self::buildHeaders($headers));
@@ -194,6 +187,12 @@ class HttpClient
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
         curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+
+        if ($type == 'POST') {
+            curl_setopt($ch, CURLOPT_POST, 1);
+            curl_setopt($ch, CURLOPT_POSTFIELDS, is_array($data) ? http_build_query($data) : $data);
+        }
+
         curl_setopt($ch, CURLOPT_TIMEOUT, self::$socketTimeout);
         curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, self::$connectTimeout);
         $content = curl_exec($ch);
@@ -218,7 +217,7 @@ class HttpClient
      */
     private static function buildHeaders($headers)
     {
-        $result = array();
+        $result = [];
         foreach ($headers as $k => $v) {
             $result[] = sprintf('%s:%s', $k, $v);
         }
