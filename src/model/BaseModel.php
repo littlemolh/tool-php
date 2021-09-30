@@ -58,14 +58,15 @@ class BaseModel extends Model
 
         $wsql = $this->commonWsql($params, $with);
 
-        $data['data'] = $this
+        $rows = $this
             ->alias($this->aliasName)
             ->where($wsql)
             ->with($with)
             ->page($page, $pagesize)
             ->order($orderby, $orderway)
             ->select();
-        $this->parseListData($data['data']);
+        $this->parseListData($rows);
+        $data['data'] = $data['rows'] = $rows;
         $data['total'] = $this->totalCount($params, $with)['count'] ?? 0;
         $data['page'] = $page;
         $data['lastpage'] = ceil($data['total'] / $pagesize);
