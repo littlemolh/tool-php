@@ -252,18 +252,18 @@ class BaseModel extends Model
         $wsql  = $this->commonWsql($params);
 
         //处理时间-若不限定时间则查询数据的开始和结束时间
-        $start_time = !empty($params['start_date']) ? strtotime($params['start_date']) : 0;
-        $end_time = !empty($params['end_date']) ? strtotime($params['end_date']) : 0;
+        $start_time = $params['start_time'] ?: (!empty($params['start_date']) ? strtotime($params['start_date']) : 0);
+        $end_time = $params['end_time'] ?: (!empty($params['end_date']) ? strtotime($params['end_date']) : 0);
 
         if (empty($start_time)) {
             $start_time = $this->where($wsql)->min('createtime');
         } else {
-            $wsql .= !empty($start_time) ? ' AND createtime >' . $start_time  : null;
+            $wsql .= !empty($start_time) ? ' AND ' . $this->aliasName . '.createtime >' . $start_time  : null;
         }
         if (empty($end_time)) {
             $end_time = $this->where($wsql)->max('createtime');
         } else {
-            $wsql .= !empty($end_time) ? ' AND createtime <' . $end_time  : null;
+            $wsql .= !empty($end_time) ? ' AND ' . $this->aliasName . '.createtime <' . $end_time  : null;
         }
 
         //整理字段
@@ -293,7 +293,7 @@ class BaseModel extends Model
             ->page($params['page'] ?? $this->page, $params['pagesize'] ?? $this->pagesize)
             ->select();
 
-        $data['total'] = $this->where($wsql)->group($group)->count();
+        $data['total'] = $this->alias($this->aliasName)->where($wsql)->group($group)->count();
 
         $data['start_time'] = $start_time;
         $data['start_date'] = !empty($start_time) ? date('Y-m-d H:i:s', $start_time) : null;
