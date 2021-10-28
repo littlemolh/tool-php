@@ -293,7 +293,13 @@ class BaseModel extends Model
             ->page($params['page'] ?? $this->page, $params['pagesize'] ?? $this->pagesize)
             ->select();
 
-        $data['total'] = $this->alias($this->aliasName)->where($wsql)->group($group)->count();
+        $data['total'] = $this
+            ->field($fields)
+            ->with($with)
+            ->where($wsql)
+            ->order('count desc')
+            ->group($group)
+            ->count();
 
         $data['start_time'] = $start_time;
         $data['start_date'] = !empty($start_time) ? date('Y-m-d H:i:s', $start_time) : null;
