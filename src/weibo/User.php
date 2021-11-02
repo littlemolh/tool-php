@@ -26,13 +26,13 @@ use littlemo\tool\HttpClient;
 class User
 {
 
-
-
-
     /**
      * 授权之后获取用户信息
      * 
-     * 文档：https://open.weibo.com/wiki/Oauth2/access_token
+     * 文档：https://open.weibo.com/wiki/2/users/show
+     * 
+     * 参数uid与screen_name二者必选其一，且只能选其一；
+     * 接口升级后，对未授权本应用的uid，将无法获取其个人简介、认证原因、粉丝数、关注数、微博数及最近一条微博内容。
      *
      * @description 根据用户ID获取用户信息
      * @example

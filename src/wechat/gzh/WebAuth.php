@@ -2,7 +2,6 @@
 
 namespace littlemo\tool\wechat\gzh;
 
-use littlemo\tool\wechat\gzh\common\Common;
 use littlemo\tool\HttpClient;
 
 /**
@@ -11,7 +10,7 @@ use littlemo\tool\HttpClient;
  * @author sxd
  * @Date 2019-07-25 10:43
  */
-class WebAuth extends Common
+class WebAuth
 {
 
     public $appid = null;
