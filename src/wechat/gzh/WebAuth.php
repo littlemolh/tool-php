@@ -100,7 +100,7 @@ class WebAuth extends Common
     {
         $url = "https://api.weixin.qq.com/sns/userinfo";
         $params = [
-            "appid" =>  $access_token,
+            "access_token" =>  $access_token,
             "openid" => $openid,
             "lang" => $lang,
         ];
