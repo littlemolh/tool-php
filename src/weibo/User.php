@@ -85,7 +85,9 @@ class User
 
         ];
         $result =  (new HttpClient)->get($url, $params);
-        $jsoninfo = json_decode($result['content'], true);
-        return $jsoninfo;
+        if ($result['code'] === 0) {
+            return $result['error_des'];
+        }
+        return json_decode($result['content'], true);
     }
 }

@@ -52,8 +52,10 @@ class WebAuth
             "grant_type" => $grant_type
         ];
         $result =  (new HttpClient)->get($url, $params);
-        $jsoninfo = json_decode($result['content'], true);
-        return $jsoninfo;
+        if ($result['code'] === 0) {
+            return $result['error_des'];
+        }
+        return json_decode($result['content'], true);
     }
 
     /**
@@ -78,8 +80,10 @@ class WebAuth
             "refresh_token" => $refresh_token,
         ];
         $result =  (new HttpClient)->get($url, $params);
-        $jsoninfo = json_decode($result['content'], true);
-        return $jsoninfo;
+        if ($result['code'] === 0) {
+            return $result['error_des'];
+        }
+        return json_decode($result['content'], true);
     }
 
     /**
@@ -104,7 +108,9 @@ class WebAuth
             "lang" => $lang,
         ];
         $result =  (new HttpClient)->get($url, $params);
-        $jsoninfo = json_decode($result['content'], true);
-        return $jsoninfo;
+        if ($result['code'] === 0) {
+            return $result['error_des'];
+        }
+        return json_decode($result['content'], true);
     }
 }
