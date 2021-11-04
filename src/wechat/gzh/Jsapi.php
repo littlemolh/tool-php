@@ -3,6 +3,7 @@
 namespace littlemo\tool\wechat\gzh;
 
 use littlemo\tool\HttpClient;
+use littlemo\tool\Common;
 
 /**
  * TODO 小程序网页授权
@@ -66,68 +67,6 @@ class Jsapi
             'timestamp' => $timestamp,
             'url' => $url,
         ];
-        return $this->createSign($params, [], 'sha1');
-    }
-
-    /**
-     * 制作随机字符串，不长于32位
-     *
-     * @description
-     * @example
-     * @author LittleMo 25362583@qq.com
-     * @since 2021-09-15
-     * @version 2021-09-15
-     * @return string
-     */
-    public function createNonceStr($length = 32)
-    {
-        $data = '0123456789qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM';
-        $str = '';
-        for ($i = 0; $i < $length; $i++) {
-            $str .= substr($data, rand(0, (strlen($data) - 1)), 1);
-        }
-
-        return $str;
-    }
-
-    /**
-     * 制作签名
-     *
-     * @description
-     * @example
-     * @author LittleMo 25362583@qq.com
-     * @since 2021-09-15
-     * @version 2021-09-15
-     * @param array $params     需要按照字段名的ASCII 码从小到大排序（字典序）后
-     * @param array $params2   无需排序操作
-     * @return string
-     */
-    public function createSign($params, $params2 = [], $type = 'md5')
-    {
-        ksort($params);
-        $string = '';
-        $signature = '';
-        foreach ($params as $key => $val) {
-            if (!empty($val)) {
-                $string .= (!empty($string) ? '&' : '') . $key . '=' . $val;
-            }
-        }
-        foreach ($params2 as $key => $val) {
-            if (!empty($val)) {
-                $string .= (!empty($string) ? '&' : '') . $key . '=' . $val;
-            }
-        }
-
-
-        switch ($type) {
-            case 'sha1':
-                $signature =  sha1($string);
-                break;
-            case 'md5':
-            case 'MD5':
-            default:
-                $signature =  MD5($string);
-        }
-        return $signature;
+        return Common::createSign($params, [], 'sha1');
     }
 }
