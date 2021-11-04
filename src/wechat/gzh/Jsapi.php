@@ -58,7 +58,7 @@ class Jsapi
      * @param string $url           当前网页的URL，不包含#及其后面部分
      * @return void
      */
-    public function sdkSignature($noncestr = '', $jsapi_ticket = '', $timestamp = time(), $url)
+    public function signature($noncestr = '', $jsapi_ticket = '', $timestamp = time(), $url)
     {
         $params = [
             'noncestr' => $noncestr,
@@ -79,11 +79,11 @@ class Jsapi
      * @version 2021-09-15
      * @return string
      */
-    protected function createNonceStr()
+    public function createNonceStr($length = 32)
     {
         $data = '0123456789qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM';
         $str = '';
-        for ($i = 0; $i < 32; $i++) {
+        for ($i = 0; $i < $length; $i++) {
             $str .= substr($data, rand(0, (strlen($data) - 1)), 1);
         }
 
@@ -102,7 +102,7 @@ class Jsapi
      * @param array $params2   无需排序操作
      * @return string
      */
-    protected function createSign($params, $params2 = [], $type = 'md5')
+    public function createSign($params, $params2 = [], $type = 'md5')
     {
         ksort($params);
         $string = '';
