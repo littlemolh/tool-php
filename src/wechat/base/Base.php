@@ -14,21 +14,40 @@ use littlemo\tool\HttpClient;
  * @since 2021-11-05
  * @version 2021-11-05
  */
-class BaseMp
+class Base
 {
 
     protected $appid = null;
     protected $secret = null;
+    protected $mchid = null;
+    protected $key = null;
 
     /**
      * 构造函数
      * @param $appid    string 小程序的appid
      * @param $secret   string 小程序唯一凭证密钥，即 AppSecret，获取方式同 appid
+     * @param $mchid    string 商户号
+     * @param $key      string 支付密钥
      */
-    public function __construct($appid = null, $secret = null)
+    /**
+     * 构造函数
+     *
+     * @description
+     * @example
+     * @author LittleMo 25362583@qq.com
+     * @since 2021-11-05
+     * @version 2021-11-05
+     * @param string $appid     公众号/小程序的appid
+     * @param string $secret    公众号/小程序唯一凭证密钥，即 AppSecret，获取方式同 appid
+     * @param string $mchid     商户号
+     * @param string $key       商户号支付密钥
+     */
+    public function __construct($appid = null, $secret = null, $mchid = null, $key = null)
     {
         $this->appid = $appid;
         $this->secret = $secret;
+        $this->mchid = $mchid;
+        $this->key = $key;
     }
 
     /**
