@@ -11,7 +11,7 @@ use littlemo\tool\Common;
  * @author sxd
  * @Date 2019-07-25 10:43
  */
-class Jsapi
+class Jsapi extends Base
 {
 
     /**

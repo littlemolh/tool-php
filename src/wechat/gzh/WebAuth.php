@@ -10,7 +10,7 @@ use littlemo\tool\HttpClient;
  * @author sxd
  * @Date 2019-07-25 10:43
  */
-class WebAuth extends Common
+class WebAuth extends Base
 {
 
 

@@ -4,13 +4,17 @@ namespace littlemo\tool\wechat\gzh;
 
 use littlemo\tool\HttpClient;
 
+
 /**
- * TODO 小程序网页授权
+ * 小程序网页授权
  *
- * @author sxd
- * @Date 2019-07-25 10:43
+ * @description
+ * @example
+ * @author LittleMo 25362583@qq.com
+ * @since 2021-11-05
+ * @version 2021-11-05
  */
-class Common
+class Base
 {
 
     public $appid = null;
