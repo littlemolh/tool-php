@@ -10,22 +10,10 @@ use littlemo\tool\HttpClient;
  * @author sxd
  * @Date 2019-07-25 10:43
  */
-class WebAuth
+class WebAuth extends Common
 {
 
-    public $appid = null;
-    public $secret = null;
 
-    /**
-     * 构造函数
-     * @param $appid    string 小程序的appid
-     * @param $secret   string 小程序唯一凭证密钥，即 AppSecret，获取方式同 appid
-     */
-    public function __construct($appid, $secret)
-    {
-        $this->appid = $appid;
-        $this->secret = $secret;
-    }
 
     /**
      * 通过code换取网页授权access_token

@@ -59,13 +59,13 @@ class Jsapi
      * @param string $url           当前网页的URL，不包含#及其后面部分
      * @return void
      */
-    public function signature($noncestr = '', $jsapi_ticket = '', $timestamp = '', $url)
+    public function signature($noncestr = '', $jsapi_ticket = '', $timestamp = '', $url = '')
     {
         $params = [
             'noncestr' => $noncestr,
             'jsapi_ticket' => $jsapi_ticket,
             'timestamp' => $timestamp ?: time(),
-            'url' => $url,
+            'url' => $url ?: ($_SERVER['HTTP_REFERER'] ?? ''),
         ];
         return Common::createSign($params, [], 'sha1');
     }
