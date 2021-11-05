@@ -25,9 +25,10 @@ class Common
      * @version 2021-09-15
      * @param int   $length     随机字符串长度
      * @param array $enum       字符串类型选择       
+     * @param array $dict       初始字符库       
      * @return string
      */
-    public static function createNonceStr($length = 32, $enum = ['0', 'a', 'A'])
+    public static function createNonceStr($length = 32, $enum = ['0', 'a', 'A'],  $dict = '')
     {
         $base = [
             '0' => '0123456789',
@@ -78,7 +79,6 @@ class Common
                 $string .= (!empty($string) ? '&' : '') . $key . '=' . $val;
             }
         }
-
 
         switch ($type) {
             case 'sha1':
