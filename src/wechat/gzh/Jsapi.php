@@ -32,7 +32,6 @@ class Jsapi
     public function ticket($access_token)
     {
 
-        $grant_type    = 'authorization_code';
         $url = "https://api.weixin.qq.com/cgi-bin/ticket/getticket";
         $params = [
             "access_token" =>  $access_token,
