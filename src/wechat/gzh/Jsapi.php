@@ -14,8 +14,6 @@ use littlemo\tool\Common;
 class Jsapi
 {
 
-
-
     /**
      * 获得jsapi_ticket
      * 
