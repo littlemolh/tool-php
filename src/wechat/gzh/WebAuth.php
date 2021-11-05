@@ -13,8 +13,6 @@ use littlemo\tool\HttpClient;
 class WebAuth extends Base
 {
 
-
-
     /**
      * 通过code换取网页授权access_token
      * 
