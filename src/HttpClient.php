@@ -89,24 +89,24 @@ class HttpClient
 
     /**
      * @param  string $url
-     * @param  array $data HTTP POST BODY
+     * @param  array $body HTTP POST BODY
      * @param  array $param HTTP URL
      * @param  array $headers HTTP header
      * @return array
      */
-    public function post($url, $data = [], $params = [], $headers = [])
+    public function post($url, $body = [], $params = [], $headers = [])
     {
-        return $this->request($url, $data, $params, $headers, 'POST');
+        return $this->request($url, $body, $params, $headers, 'POST');
     }
 
     /**
      * @param  string $url
-     * @param  array $datas HTTP POST BODY
+     * @param  array $bodys HTTP POST BODY
      * @param  array $param HTTP URL
      * @param  array $headers HTTP header
      * @return array
      */
-    public function multi_post($url, $datas = [], $params = [], $headers = [])
+    public function multi_post($url, $bodys = [], $params = [], $headers = [])
     {
         $url = $this->buildUrl($url, $params);
         $headers = array_merge(self::$headers, self::buildHeaders($headers));
@@ -114,7 +114,7 @@ class HttpClient
         $chs = [];
         $result = [];
         $mh = curl_multi_init();
-        foreach ($datas as $data) {
+        foreach ($bodys as $body) {
             $ch = curl_init();
             $chs[] = $ch;
             $this->prepare($ch);
@@ -124,7 +124,7 @@ class HttpClient
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
             curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
             curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-            curl_setopt($ch, CURLOPT_POSTFIELDS, is_array($data) ? http_build_query($data) : $data);
+            curl_setopt($ch, CURLOPT_POSTFIELDS, is_array($body) ? http_build_query($body) : $body);
             curl_setopt($ch, CURLOPT_TIMEOUT, self::$socketTimeout);
             curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, self::$connectTimeout);
             curl_multi_add_handle($mh, $ch);
@@ -170,12 +170,12 @@ class HttpClient
      * @since 2021-09-29
      * @version 2021-09-29
      * @param [type] $url
-     * @param array $data
+     * @param array $body
      * @param array $params
      * @param array $headers
      * @return void
      */
-    public function request($url, $data = [], $params = [], $headers = [], $type = 'GET')
+    public function request($url, $body = [], $params = [], $headers = [], $type = 'GET')
     {
         $url = $this->buildUrl($url, $params);
         $headers = array_merge(self::$headers, self::buildHeaders($headers));
@@ -190,7 +190,7 @@ class HttpClient
 
         if ($type == 'POST') {
             curl_setopt($ch, CURLOPT_POST, 1);
-            curl_setopt($ch, CURLOPT_POSTFIELDS, is_array($data) ? http_build_query($data) : $data);
+            curl_setopt($ch, CURLOPT_POSTFIELDS, is_array($body) ? http_build_query($body) : $body);
         }
 
         curl_setopt($ch, CURLOPT_TIMEOUT, self::$socketTimeout);
@@ -198,15 +198,13 @@ class HttpClient
         $content = curl_exec($ch);
         $code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 
-        if ($code === 0) {
-            $error_des = curl_error($ch);
-        }
+        $error_des = curl_error($ch);
 
         curl_close($ch);
         return array(
             'code' => $code,
             'content' => $content,
-            'error_des' => $error_des ?? '',
+            'error_des' => $error_des,
         );
     }
 
@@ -230,7 +228,7 @@ class HttpClient
      * @param  array $params 参数
      * @return string
      */
-    private function buildUrl($url, $params)
+    public function buildUrl($url, $params)
     {
         if (!empty($params)) {
             $str = http_build_query($params);
