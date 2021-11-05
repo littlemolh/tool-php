@@ -4,6 +4,7 @@ namespace littlemo\tool\wechat\gzh;
 
 use littlemo\tool\HttpClient;
 use littlemo\tool\Common;
+use littlemo\tool\wechat\base\BaseMp;
 
 /**
  * TODO 小程序网页授权
@@ -11,7 +12,7 @@ use littlemo\tool\Common;
  * @author sxd
  * @Date 2019-07-25 10:43
  */
-class Jsapi extends Base
+class Jsapi extends BaseMp
 {
 
     /**

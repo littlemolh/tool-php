@@ -3,6 +3,7 @@
 namespace littlemo\tool\wechat\gzh;
 
 use littlemo\tool\HttpClient;
+use littlemo\tool\wechat\base\BaseMp;
 
 /**
  * TODO 小程序网页授权
@@ -10,7 +11,7 @@ use littlemo\tool\HttpClient;
  * @author sxd
  * @Date 2019-07-25 10:43
  */
-class WebAuth extends Base
+class WebAuth extends BaseMp
 {
 
     /**

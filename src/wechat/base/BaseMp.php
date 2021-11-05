@@ -1,12 +1,12 @@
 <?php
 
-namespace littlemo\tool\wechat\gzh;
+namespace littlemo\tool\wechat\base;
 
 use littlemo\tool\HttpClient;
 
 
 /**
- * 小程序网页授权
+ * 公众号\小程序基础对象
  *
  * @description
  * @example
@@ -14,25 +14,25 @@ use littlemo\tool\HttpClient;
  * @since 2021-11-05
  * @version 2021-11-05
  */
-class Base
+class BaseMp
 {
 
-    public $appid = null;
-    public $secret = null;
+    protected $appid = null;
+    protected $secret = null;
 
     /**
      * 构造函数
      * @param $appid    string 小程序的appid
      * @param $secret   string 小程序唯一凭证密钥，即 AppSecret，获取方式同 appid
      */
-    public function __construct($appid, $secret)
+    public function __construct($appid = null, $secret = null)
     {
         $this->appid = $appid;
         $this->secret = $secret;
     }
 
     /**
-     * 获取Access token
+     * 获取全局Access token（支持：公众号、小程序）  
      * 
      * 文档：https://developers.weixin.qq.com/doc/offiaccount/Basic_Information/Get_access_token.html
      * 
@@ -45,7 +45,7 @@ class Base
      * @param string    $grant_type     获取access_token填写client_credential
      * @return void
      */
-    public function token($grant_type = 'client_credential')
+    protected function token($grant_type = 'client_credential')
     {
         $url = "https://api.weixin.qq.com/cgi-bin/token";
         $params = [
