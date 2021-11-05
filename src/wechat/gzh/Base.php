@@ -47,7 +47,7 @@ class Base
      */
     public function token($grant_type = 'client_credential')
     {
-        $url = " https://api.weixin.qq.com/cgi-bin/token";
+        $url = "https://api.weixin.qq.com/cgi-bin/token";
         $params = [
             "grant_type" => $grant_type,
             "appid" =>  $this->appid,
