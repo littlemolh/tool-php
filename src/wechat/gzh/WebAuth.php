@@ -6,7 +6,7 @@ use littlemo\tool\HttpClient;
 use littlemo\tool\wechat\base\Base;
 
 /**
- * TODO 小程序网页授权
+ * TODO 微信网页授权
  *
  * @author sxd
  * @Date 2019-07-25 10:43
