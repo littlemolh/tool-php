@@ -11,7 +11,7 @@ use littlemo\tool\qq\Base;
  * @author sxd
  * @Date 2019-07-25 10:43
  */
-class OAuth2_0 extends Base
+class OAuth2 extends Base
 {
 
     /**
