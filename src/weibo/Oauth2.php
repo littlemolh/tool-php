@@ -23,43 +23,8 @@ use littlemo\tool\HttpClient;
  * @since 2021-11-02
  * @version 2021-11-02
  */
-class Oauth2
+class Oauth2 extends  Base
 {
-
-    /**
-     * 申请应用时分配的AppKey。
-     *
-     * @var string
-     * @description
-     * @example
-     * @author LittleMo 25362583@qq.com
-     * @since 2021-11-02
-     * @version 2021-11-02
-     */
-    static $client_id = null;
-
-    /**
-     * 	申请应用时分配的AppSecret。
-     *
-     * @var string
-     * @description
-     * @example
-     * @author LittleMo 25362583@qq.com
-     * @since 2021-11-02
-     * @version 2021-11-02
-     */
-    static $client_secret = null;
-
-    /**
-     * 构造函数
-     * @param $client_id    string 申请应用时分配的AppKey。
-     * @param $client_secret   string 申请应用时分配的AppSecret。
-     */
-    public function __construct($client_id, $client_secret)
-    {
-        self::$client_id = $client_id;
-        self::$client_secret = $client_secret;
-    }
 
     /**
      * 获取授权过的Access Token
@@ -82,8 +47,8 @@ class Oauth2
         $grant_type    = 'authorization_code';
         $url = "https://api.weibo.com/oauth2/access_token";
         $data = [
-            "client_id" => self::$client_id,
-            "client_secret	" => self::$client_secret,
+            "client_id" => $this->client_id,
+            "client_secret	" => $this->client_secret,
             "grant_type" => $grant_type,
             "code" => $code,
             "redirect_uri" => $redirect_uri,
