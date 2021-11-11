@@ -1,6 +1,6 @@
 <?php
 
-namespace littlemo\tool\wechat\gzh;
+namespace littlemo\tool\qq;
 
 use littlemo\tool\HttpClient;
 use littlemo\tool\qq\Base;
