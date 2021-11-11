@@ -48,7 +48,7 @@ class Oauth2 extends  Base
         $url = "https://api.weibo.com/oauth2/access_token";
         $data = [
             "client_id" => $this->client_id,
-            "client_secret	" => $this->client_secret,
+            "client_secret" => $this->client_secret,
             "grant_type" => $grant_type,
             "code" => $code,
             "redirect_uri" => $redirect_uri,
